@@ -37,8 +37,3 @@ variable "location" {
   description = "location where to deploy resources to"
   type        = string
 }
-
-#Get resource group
-data "azurerm_resource_group" "wsdevops" {
-  name = var.rg_name
-}
