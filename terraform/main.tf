@@ -10,7 +10,7 @@ terraform {
     resource_group_name  = "ws-devops"
     storage_account_name = "cgmsgtf"
     container_name       = "tfstateazdevops"
-    key                  = "<your unique prefix>.tfstate"
+    key                  = "aof.tfstate"
   }
 }
 
@@ -31,9 +31,9 @@ data "azurerm_resource_group" "wsdevops" {
 ################################################
 
 resource "azurerm_app_service_plan" "sp1" {
-  name                = "<your prefix>-pl"
-  location            = data.azurerm_resource_group.wsdevops.location
-  resource_group_name = data.azurerm_resource_group.wsdevops.name
+  name                = var.app_service_plan_name
+  location            = var.location
+  resource_group_name = var.rg_name
   kind                = "Linux"
   reserved            = true
 
@@ -45,8 +45,8 @@ resource "azurerm_app_service_plan" "sp1" {
 
 resource "azurerm_app_service" "website" {
   name                = var.web_app_name
-  location            = data.azurerm_resource_group.wsdevops.location
-  resource_group_name = data.azurerm_resource_group.wsdevops.name
+  location            = var.location
+  resource_group_name = var.rg_name
   app_service_plan_id = azurerm_app_service_plan.sp1.id
 
   site_config {
@@ -60,7 +60,7 @@ resource "azurerm_app_service" "website" {
 ################################################
 
 resource "azurerm_log_analytics_workspace" "log" {
-  name                = "<your prefix>-lg-analytics"
+  name                = "aof-lg-analytics"
   location            = data.azurerm_resource_group.wsdevops.location
   resource_group_name = data.azurerm_resource_group.wsdevops.name
   sku                 = "PerGB2018"
@@ -68,7 +68,7 @@ resource "azurerm_log_analytics_workspace" "log" {
 }
 
 resource "azurerm_application_insights" "appi" {
-  name                = "<your prefix>-appi"
+  name                = "aof-appi"
   location            = data.azurerm_resource_group.wsdevops.location
   resource_group_name = data.azurerm_resource_group.wsdevops.name
   workspace_id        = azurerm_log_analytics_workspace.log.id
@@ -108,7 +108,7 @@ data "template_file" "dash-template" {
 }
   
   resource "azurerm_dashboard" "my-board" {
-  name                = "<your prefix>-dashboard"
+  name                = "aof-dashboard"
   resource_group_name = data.azurerm_resource_group.wsdevops.name
   location            = data.azurerm_resource_group.wsdevops.location
   tags = {

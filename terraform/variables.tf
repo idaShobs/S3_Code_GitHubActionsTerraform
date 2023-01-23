@@ -18,7 +18,27 @@ variable "tenant_id" {
   type        = string
 }
 
+variable "rg_name" {
+  description = "The name of the resource group."
+  type        = string
+}
+
 variable "web_app_name" {
   description = "The name of the web app." 
   type        = string
+}
+
+variable "app_service_plan_name" {
+  description = "The name of the app service plan."
+  type        = string
+}
+
+variable "location" {
+  description = "location where to deploy resources to"
+  type        = string
+}
+
+#Get resource group
+data "azurerm_resource_group" "wsdevops" {
+  name = var.rg_name
 }
